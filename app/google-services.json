@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "22360920937",
+    "firebase_url": "https://liargamemaker.firebaseio.com",
+    "project_id": "liargamemaker",
+    "storage_bucket": "liargamemaker.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:22360920937:android:af31603ca1b8f5500863f8",
+        "android_client_info": {
+          "package_name": "com.duckkite.android.liargamemaker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "22360920937-chq8afav26nd8jp6gqv21igi1o1bf1vv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.duckkite.android.liargamemaker",
+            "certificate_hash": "494bea7087adb1e65028b0b5af61b172618e9cf3"
+          }
+        },
+        {
+          "client_id": "22360920937-k55hd2h0ktnvqgpp5pf4qkgc1i5hd889.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBywK7bjbQOWZLzzKVuUS93V1xnrLwNLKU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "22360920937-k55hd2h0ktnvqgpp5pf4qkgc1i5hd889.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

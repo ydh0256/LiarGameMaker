@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#42CAFD</color>
+    <color name="colorPrimaryDark">#42A5F5</color>
+    <color name="colorAccent">#0D47A1</color>
+
+    <!-- Gray -->
+    <color name="grayLight">#FFF8F8F8</color>
+    <color name="grayNormal">#E6E6E6</color>
+    <color name="grayDark">#C8C8C8</color>
+
+    <!-- Chat room -->
+    <color name="chatRoomBackgroundDefault">#C1D0DB</color>
+    <color name="messageBoxBg">#FFFFFF</color>
+    <color name="messageBoxBgMy">#FBE34D</color>
+    <color name="notificationBg">#40575757</color>
+
+    <!-- Profile bg -->
+    <color name="profileBg01">#B2EBF2</color>
+    <color name="profileBg02">#C5CAE9</color>
+    <color name="profileBg03">#E1BEE7</color>
+    <color name="profileBg04">#FFCDD2</color>
+    <color name="profileBg05">#FFECB3</color>
+    <color name="profileBg06">#C8E6C9</color>
+    <color name="profileBgStroke">#4D989898</color>
+    <color name="profileEditBg">#FFFFFF</color>
+
+    <array name="profileBg">
+        <item>@color/profileBg01</item>
+        <item>@color/profileBg02</item>
+        <item>@color/profileBg03</item>
+        <item>@color/profileBg04</item>
+        <item>@color/profileBg05</item>
+        <item>@color/profileBg06</item>
+    </array>
+</resources>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="gameRoom"
+            type="com.duckkite.android.liargamemaker.data.model.GameRoom" />
+
+        <variable
+            name="actionListener"
+            type="com.duckkite.android.liargamemaker.ui.main.adapter.GameListItemActionListener" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:minHeight="@dimen/game_list_item_height"
+        android:onClick="@{() -> actionListener.onGameListItemSelect(gameRoom)}"
+        android:padding="@dimen/game_list_item_padding">
+
+        <TextView
+            android:id="@+id/gameRoomName"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{gameRoom.roomName}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="게임방 이름" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

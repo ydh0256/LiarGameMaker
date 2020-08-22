@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <import type="android.view.Gravity" />
+
+        <variable
+            name="gameMessage"
+            type="com.duckkite.android.liargamemaker.data.model.GameMessage" />
+
+        <variable
+            name="isMyMessage"
+            type="Boolean" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/profileImage"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:visibility="@{isMyMessage ? View.GONE : View.VISIBLE}"
+            app:civ_border_color="@color/profileBgStroke"
+            app:civ_border_width="1dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:userImage="@{gameMessage.sender}" />
+
+        <TextView
+            android:id="@+id/userName"
+            style="@style/TextAppearance.MaterialComponents.Subtitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@{gameMessage.sender.name}"
+            android:visibility="@{isMyMessage ? View.GONE : View.VISIBLE}"
+            app:layout_constraintLeft_toRightOf="@id/profileImage"
+            app:layout_constraintTop_toTopOf="@id/profileImage"
+            tools:text="덕봉덕봉덕봉" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="@{isMyMessage ? Gravity.END : Gravity.START}"
+            android:layout_marginTop="8dp"
+            app:layout_goneMarginTop="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="@id/userName"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/userName">
+
+            <TextView
+                android:id="@+id/messageText"
+                style="@style/TextAppearance.MaterialComponents.Body2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{gameMessage.messageContent.text}"
+                android:background="@{isMyMessage ? @drawable/bg_message_box_my : @drawable/bg_message_box}"
+                tools:text="abcdEFGH가나다라마바사1234abcdEFGH가나다라마바사1234abcdEFGH가나다라마바사1234abcdEFGH가나다라마바사1234abcdEFGH가나다라마바사1234" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
