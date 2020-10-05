@@ -15,9 +15,12 @@ class GameRoomRepository(
         return gameRemoteDataSource.collection(GAME_LIST_TABLE).document(roomId)
     }
 
+    override fun updateMaster(roomId: String, userId: String): Task<Void> {
+        return gameRemoteDataSource.collection(GAME_LIST_TABLE).document(roomId).update("masterId", userId)
+    }
+
     override fun fetchPlayerList(roomId: String): Query {
-        return gameRemoteDataSource.collection(GAME_LIST_TABLE).document(roomId)
-            .collection(PLAYER_LIST).whereEqualTo("playerStatus", "PARTICIPATION")
+        return gameRemoteDataSource.collection(GAME_LIST_TABLE).document(roomId).collection(PLAYER_LIST)
     }
 
     override fun fetchMessageList(roomId: String): Query {

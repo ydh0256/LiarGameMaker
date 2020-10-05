@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.viewModelScope
+import com.duckkite.android.liargamemaker.R
 import com.duckkite.android.liargamemaker.data.event.ErrorEvent
 import com.duckkite.android.liargamemaker.data.event.ErrorEventType
 import com.duckkite.android.liargamemaker.data.event.ErrorEventViewType
@@ -14,19 +15,23 @@ import com.duckkite.android.liargamemaker.data.source.remote.GameRoomDataSource
 import com.duckkite.android.liargamemaker.ui.base.BaseViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.*
 
 class GameRoomViewModel(
     private val gameListDataSource: GameListDataSource,
     private val gameRoomDataSource: GameRoomDataSource
 ) : BaseViewModel() {
-    val gameRoom = MutableLiveData<GameRoom>()
+    private val _gameRoom = MutableLiveData<GameRoom>()
+    val gameRoom: LiveData<GameRoom>
+        get() = _gameRoom
     private val _playerList = MutableLiveData<List<User>>().apply { value = emptyList() }
     val playerList: LiveData<List<User>>
         get() = _playerList
     private val _messageList = MutableLiveData<List<GameMessage>>().apply { value = emptyList() }
     val messageList: LiveData<List<GameMessage>>
         get() = _messageList
+    private val _currentGame = MutableLiveData<Game?>()
+    val currentGame: LiveData<Game?>
+        get() = _currentGame
     val sendMessageText = MutableLiveData<String>()
 
     val playerMap: LiveData<Map<String, User>> = Transformations.map(playerList) { playerList ->
@@ -35,34 +40,40 @@ class GameRoomViewModel(
         }.associateBy { it.uuid }
     }
 
-    val isMaster: LiveData<Boolean> = Transformations.map(gameRoom) { gameRoom ->
+    val isMaster: LiveData<Boolean> = Transformations.map(_gameRoom) { gameRoom ->
         MyProfile.isMe(gameRoom.masterId)
     }
 
     private var isCheckedMyProfileStatus = false
 
     fun fetchGameRoomData(game: GameRoom) {
-        gameRoom.value = game
+        _gameRoom.value = game
         gameRoomDataSource.fetchGameRoomInformation(game.roomId)
             .addSnapshotListener { snapshot, error ->
                 error?.let {
-                    ErrorEvent(ErrorEventType.CLOSE, ErrorEventViewType.TOAST, it.localizedMessage).also { errorEvent ->
-                        sendErrorEvent(errorEvent)
-                    }
+                    handleSimpleFirebaseException(it, ErrorEventType.CLOSE)
                     return@addSnapshotListener
                 }
                 snapshot?.let {
                     it.toObject(GameRoom::class.java)?.let { gameRoom ->
-                        this.gameRoom.value = gameRoom
+                        this._gameRoom.value = gameRoom
                         this.fetchPlayerList(game.roomId)
+                        this.fetchCurrentGame(game.roomId)
                         if (gameRoom.gameMode == GameMode.OFFLINE) {
                             viewModelScope.launch {
                                 gameListDataSource.setOfflineGame(gameRoom)
                             }
                         }
                     } ?: run {
-                        ErrorEvent(ErrorEventType.CUSTOM, ErrorEventViewType.TOAST, customError = ERROR_ROOM_DELETED).also { errorEvent ->
-                            sendErrorEvent(errorEvent)
+                        viewModelScope.launch {
+                            gameListDataSource.deleteGameRoom(game.roomId)
+                            ErrorEvent(
+                                ErrorEventType.CLOSE,
+                                ErrorEventViewType.TOAST,
+                                resourceMessage = R.string.game_room_deleted_message
+                            ).also { errorEvent ->
+                                sendErrorEvent(errorEvent)
+                            }
                         }
                     }
                 }
@@ -73,9 +84,7 @@ class GameRoomViewModel(
         gameRoomDataSource.fetchMessageList(roomId)
             .addSnapshotListener { snapshot, error ->
                 error?.let {
-                    ErrorEvent(ErrorEventType.CLOSE, ErrorEventViewType.TOAST, it.localizedMessage).also { errorEvent ->
-                        sendErrorEvent(errorEvent)
-                    }
+                    handleSimpleFirebaseException(it, ErrorEventType.CLOSE)
                     return@addSnapshotListener
                 }
                 snapshot?.let {
@@ -90,14 +99,25 @@ class GameRoomViewModel(
 
     fun sendTextMessage() {
         val profile = MyProfile.profile ?: return
-        val roomId = gameRoom.value?.roomId ?: return
-        val gameMessage = GameMessage(
-            UUID.randomUUID().toString(),
-            MessageType.CHAT,
-            profile,
-            MessageContent(text = sendMessageText.value)
-        )
+        val roomId = _gameRoom.value?.roomId ?: return
+        val gameMessage = makeChatMessage(profile, sendMessageText.value)
         sendMessageText.value = ""
+        sendMessage(roomId, gameMessage)
+    }
+
+    fun changeMaster(userId: String) {
+        val roomId = _gameRoom.value?.roomId ?: return
+        gameRoomDataSource.updateMaster(roomId, userId).addOnSuccessListener {
+            loadEnd()
+        }.addOnFailureListener { exception ->
+            loadEnd()
+            ErrorEvent(ErrorEventType.NORMAL, ErrorEventViewType.TOAST, exception.localizedMessage).also { errorEvent ->
+                sendErrorEvent(errorEvent)
+            }
+        }
+    }
+
+    private fun sendMessage(roomId: String, gameMessage: GameMessage) {
         gameRoomDataSource.sendMessage(roomId, gameMessage).addOnFailureListener { exception ->
             ErrorEvent(ErrorEventType.NORMAL, ErrorEventViewType.TOAST, exception.localizedMessage).also { errorEvent ->
                 sendErrorEvent(errorEvent)
@@ -109,15 +129,28 @@ class GameRoomViewModel(
         gameRoomDataSource.fetchPlayerList(roomId)
             .addSnapshotListener { snapshot, error ->
                 error?.let {
-                    ErrorEvent(ErrorEventType.CLOSE, ErrorEventViewType.TOAST, it.localizedMessage).also { errorEvent ->
-                        sendErrorEvent(errorEvent)
-                    }
+                    handleSimpleFirebaseException(it, ErrorEventType.CLOSE)
                     return@addSnapshotListener
                 }
                 snapshot?.let {
                     _playerList.value = it.toObjects(User::class.java)
                     when (isCheckedMyProfileStatus) {
                         false -> addOrUpdateMyProfile(roomId)
+                    }
+                }
+            }
+    }
+
+    private fun fetchCurrentGame(roomId: String) {
+        gameRoomDataSource.fetchCurrentGame(roomId)
+            .addSnapshotListener { snapshot, error ->
+                error?.let {
+                    handleSimpleFirebaseException(it, ErrorEventType.CLOSE)
+                    return@addSnapshotListener
+                }
+                snapshot?.let {
+                    it.toObjects(Game::class.java)?.let { gameList ->
+                        _currentGame.value = gameList.firstOrNull()
                     }
                 }
             }
@@ -131,7 +164,7 @@ class GameRoomViewModel(
             MyProfile.isMe(user.uuid)
         }?.let { findUser ->
             if (findUser.photoUrl != myProfile.photoUrl || findUser.name != myProfile.name) {
-                gameRoomDataSource.updatePlayerToChatRoom(roomId, findUser)
+                gameRoomDataSource.updatePlayerToChatRoom(roomId, myProfile)
             }
         } ?: run {
             val profile = MyProfile.profile ?: return
@@ -142,17 +175,8 @@ class GameRoomViewModel(
 
     private fun sendEnteredMessage() {
         val profile = MyProfile.profile ?: return
-        val roomId = gameRoom.value?.roomId ?: return
-        val gameMessage = GameMessage(
-            UUID.randomUUID().toString(),
-            MessageType.NOTIFICATION,
-            profile,
-            MessageContent(MessageContentType.ENTERED)
-        )
-        gameRoomDataSource.sendMessage(roomId, gameMessage)
-    }
-
-    companion object {
-        const val ERROR_ROOM_DELETED = "ERROR_ROOM_DELETED"
+        val roomId = _gameRoom.value?.roomId ?: return
+        val gameMessage = makeEnterMessage(profile)
+        sendMessage(roomId, gameMessage)
     }
 }

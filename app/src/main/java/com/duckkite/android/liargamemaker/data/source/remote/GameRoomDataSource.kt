@@ -9,6 +9,7 @@ import com.google.firebase.firestore.Query
 
 interface GameRoomDataSource {
     fun fetchGameRoomInformation(roomId: String): DocumentReference
+    fun updateMaster(roomId: String, userId: String): Task<Void>
     fun fetchPlayerList(roomId: String): Query
     fun fetchMessageList(roomId: String): Query
     fun sendMessage(roomId: String, message: GameMessage): Task<Void>

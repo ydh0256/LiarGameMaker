@@ -1,36 +1,41 @@
 package com.duckkite.android.liargamemaker.ui.game.room.dialog
 
-import android.app.Dialog
+import android.app.AlertDialog
 import android.content.Context
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
-import androidx.recyclerview.widget.DividerItemDecoration
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.duckkite.android.liargamemaker.data.model.User
 import com.duckkite.android.liargamemaker.databinding.DialogUserSelectBinding
 import com.duckkite.android.liargamemaker.ui.game.room.adapter.PlayerListAdapter
 
-class PlayerListDialog(windowContext: Context) : Dialog(windowContext) {
+class PlayerListDialog(private val windowContext: Context) {
 
     private val bindingView: DialogUserSelectBinding
     var title: String? = null
     var playerList: List<User>? = null
     var payerSelectListener: PlayerListAdapter.PlayerSelectListener? = null
+    private var playerListDialog: AlertDialog? = null
 
     init {
         val layoutInflater = LayoutInflater.from(windowContext)
         bindingView = DialogUserSelectBinding.inflate(layoutInflater, null, false)
     }
 
-    override fun show() {
+
+    fun show() {
         with(bindingView.playerList) {
             adapter = PlayerListAdapter().apply {
                 payerSelectListener = this@PlayerListDialog.payerSelectListener
+                playerListDialog?.dismiss()
             }
-            addItemDecoration(DividerItemDecoration(context, LinearLayoutManager.VERTICAL))
         }
         bindingView.title = title
         bindingView.userList = playerList
-        super.show()
+        playerListDialog = AlertDialog.Builder(windowContext)
+            .setView(bindingView.root)
+            .show()
+        playerListDialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
     inline fun show(func: PlayerListDialog.() -> Unit): PlayerListDialog {

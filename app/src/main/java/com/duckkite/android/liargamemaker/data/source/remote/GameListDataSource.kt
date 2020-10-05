@@ -11,7 +11,7 @@ import com.google.firebase.firestore.Query
 interface GameListDataSource {
     fun makeNewGameRoom(gameRoom: GameRoom): Task<Void>
     fun updateGameRoom(gameRoom: GameRoom): Task<Void>
-    fun deleteGameRoom(roomId: String): Task<Void>
+    suspend fun deleteGameRoom(roomId: String)
     suspend fun setOfflineGame(gameRoom: GameRoom)
     fun fetchOnlineGameList(): Query
     fun fetchOfflineGameList(): LiveData<List<GameRoom>>

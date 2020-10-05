@@ -31,3 +31,19 @@ enum class MessageContentType {
     LEAVE,
     NEW_GAME
 }
+
+fun makeChatMessage(profile: User, sendMessageText: String?): GameMessage {
+    return GameMessage(
+        messageType = MessageType.CHAT,
+        sender = profile,
+        messageContent = MessageContent(text = sendMessageText)
+    )
+}
+
+fun makeEnterMessage(profile: User): GameMessage {
+    return GameMessage(
+        messageType = MessageType.NOTIFICATION,
+        sender = profile,
+        messageContent = MessageContent(MessageContentType.ENTERED)
+    )
+}

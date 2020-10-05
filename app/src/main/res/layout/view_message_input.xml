@@ -10,6 +10,9 @@
         <variable
             name="viewModel"
             type="com.duckkite.android.liargamemaker.ui.game.room.GameRoomViewModel" />
+        <variable
+            name="gameRoomAction"
+            type="com.duckkite.android.liargamemaker.ui.game.room.GameRoomAction" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -31,6 +34,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:visibility="@{viewModel.isMaster ? View.VISIBLE : View.GONE}"
+            android:onClick="@{() -> gameRoomAction.onMasterMenuClick()}"
             app:icon="@drawable/ic_baseline_sports_esports_24"
             app:iconGravity="textStart"
             app:iconPadding="0dp"

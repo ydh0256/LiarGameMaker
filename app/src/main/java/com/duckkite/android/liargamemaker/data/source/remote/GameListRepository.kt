@@ -21,8 +21,8 @@ class GameListRepository(
         return gameRemoteDataSource.collection(GAME_LIST_TABLE).document(gameRoom.roomId).set(gameRoom)
     }
 
-    override fun deleteGameRoom(roomId: String): Task<Void> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    override suspend fun deleteGameRoom(roomId: String) {
+        gameLocalDataSource.deleteOfflineGameRoom(roomId)
     }
 
     override suspend fun setOfflineGame(gameRoom: GameRoom) {

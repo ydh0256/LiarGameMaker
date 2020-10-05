@@ -23,10 +23,10 @@ import com.google.android.material.snackbar.Snackbar
 
 
 fun AppCompatActivity.handleBaseViewModelErrorEvent(
-    baseViewModel: BaseViewModel,
+    baseViewModel: BaseViewModel?,
     customErrorHandler: (ErrorEvent) -> Unit = {}
 ) {
-    baseViewModel.errorEvent.observe(this, Observer<Event<ErrorEvent>> { event ->
+    baseViewModel?.errorEvent?.observe(this, Observer<Event<ErrorEvent>> { event ->
         event.getContentIfNotHandled()?.let { errorEvent ->
             when (errorEvent.errorEventType) {
                 ErrorEventType.NORMAL -> normalErrorHandler(this, errorEvent)

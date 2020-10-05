@@ -41,7 +41,7 @@ class PlayerInviteDialog(windowContext: Context) : Dialog(windowContext) {
         return this
     }
 
-    private fun generateQR(value: String) : Bitmap? {
+    private fun generateQR(value: String): Bitmap? {
         val bitMatrix: BitMatrix
         try {
             val hints = EnumMap<EncodeHintType, Any>(EncodeHintType::class.java)
@@ -55,21 +55,18 @@ class PlayerInviteDialog(windowContext: Context) : Dialog(windowContext) {
                 280.dp,
                 hints
             )
-        }catch (illegalargumentexception : IllegalArgumentException){
+        } catch (illegalArgumentException: IllegalArgumentException) {
             return null
         }
 
         val bitMatrixWidth = bitMatrix.width
-
         val bitMatrixHeight = bitMatrix.height
-
         val pixels = IntArray(bitMatrixWidth * bitMatrixHeight)
 
         for (y in 0 until bitMatrixHeight) {
             val offset = y * bitMatrixWidth
 
             for (x in 0 until bitMatrixWidth) {
-
                 pixels[offset + x] = if (bitMatrix.get(x, y))
                     Color.BLACK
                 else

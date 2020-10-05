@@ -4,6 +4,7 @@ import java.util.*
 
 data class Game(
     val gameId: String = UUID.randomUUID().toString(),
+    val gameStatus: GameStatus = GameStatus.IDLE,
     val category: String,
     val keyWord: String,
     val playerList: List<User>,
@@ -13,3 +14,7 @@ data class Game(
     val voteResult: List<Map<User, User>>,
     val startTime: Long = System.currentTimeMillis()
 )
+
+enum class GameStatus {
+    IDLE, VOTING, FINISH
+}

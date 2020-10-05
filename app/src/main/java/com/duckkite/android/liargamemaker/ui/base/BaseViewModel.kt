@@ -3,9 +3,8 @@ package com.duckkite.android.liargamemaker.ui.base
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.duckkite.android.liargamemaker.data.event.ActionEvent
-import com.duckkite.android.liargamemaker.data.event.ErrorEvent
-import com.duckkite.android.liargamemaker.data.event.Event
+import com.duckkite.android.liargamemaker.data.event.*
+import com.google.firebase.firestore.FirebaseFirestoreException
 
 abstract class BaseViewModel : ViewModel(){
     private val _actionEvent = MutableLiveData<Event<ActionEvent>>()
@@ -34,5 +33,11 @@ abstract class BaseViewModel : ViewModel(){
 
     fun loadEnd() {
         _isLoading.value = false
+    }
+
+    fun handleSimpleFirebaseException(error: FirebaseFirestoreException, eventType: ErrorEventType) {
+        ErrorEvent(eventType, ErrorEventViewType.TOAST, error.localizedMessage).also { errorEvent ->
+            sendErrorEvent(errorEvent)
+        }
     }
 }

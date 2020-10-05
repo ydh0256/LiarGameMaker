@@ -2,16 +2,13 @@ package com.duckkite.android.liargamemaker.ui.main.ui.profile
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.duckkite.android.liargamemaker.R
 import com.duckkite.android.liargamemaker.data.event.ActionEventType
 import com.duckkite.android.liargamemaker.databinding.ActivityProfileEditBinding
 import com.duckkite.android.liargamemaker.ui.base.BaseActivity
-import com.duckkite.android.liargamemaker.ui.base.BaseViewModel
 import com.duckkite.android.liargamemaker.ui.main.MainActivity
-import com.duckkite.android.liargamemaker.util.extention.handleBaseViewModelErrorEvent
 import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.auth.FirebaseAuth
 import org.koin.androidx.viewmodel.ext.android.viewModel
@@ -77,8 +74,6 @@ class ProfileEditActivity : BaseActivity() {
                 }
             }
         })
-
-        handleBaseViewModelErrorEvent(profileEditViewModel)
     }
 
     private fun moveToMainActivity() {

@@ -10,6 +10,9 @@
         <variable
             name="viewModel"
             type="com.duckkite.android.liargamemaker.ui.game.room.GameRoomViewModel" />
+        <variable
+            name="gameRoomAction"
+            type="com.duckkite.android.liargamemaker.ui.game.room.GameRoomAction" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,6 +42,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintLeft_toLeftOf="parent"
                 app:layout_constraintRight_toRightOf="parent"
-                app:viewModel="@{viewModel}" />
+                app:viewModel="@{viewModel}"
+                app:gameRoomAction="@{gameRoomAction}" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

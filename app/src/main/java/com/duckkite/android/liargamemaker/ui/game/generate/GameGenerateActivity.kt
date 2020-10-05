@@ -1,9 +1,7 @@
 package com.duckkite.android.liargamemaker.ui.game.generate
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.duckkite.android.liargamemaker.R
@@ -11,11 +9,7 @@ import com.duckkite.android.liargamemaker.data.event.ActionEventType
 import com.duckkite.android.liargamemaker.data.model.GameRoom
 import com.duckkite.android.liargamemaker.databinding.ActivityGameGenerateBinding
 import com.duckkite.android.liargamemaker.ui.base.BaseActivity
-import com.duckkite.android.liargamemaker.ui.base.BaseViewModel
 import com.duckkite.android.liargamemaker.ui.game.room.GameRoomActivity
-import com.duckkite.android.liargamemaker.ui.main.MainActivity
-import com.duckkite.android.liargamemaker.ui.main.ui.profile.ProfileEditActivity
-import com.duckkite.android.liargamemaker.util.extention.handleBaseViewModelErrorEvent
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class GameGenerateActivity : BaseActivity() {
@@ -49,14 +43,13 @@ class GameGenerateActivity : BaseActivity() {
                                 putExtra(GameRoomActivity.INTENT_GAME_ROOM, game)
                             }.also {
                                 startActivity(it)
+                                finish()
                             }
                         }
                     }
                 }
             }
         })
-
-        handleBaseViewModelErrorEvent(gameGenerateViewModel)
     }
 
     companion object {

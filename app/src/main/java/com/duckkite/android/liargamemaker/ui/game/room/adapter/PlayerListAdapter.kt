@@ -23,7 +23,7 @@ class PlayerListAdapter(): BindableAdapter<PlayerListAdapter.VH, User>() {
         override fun bindModel(model: User) {
             with(itemUserBinding) {
                 user = model
-                payerSelectListener = this.playerSelectListener
+                this.playerSelectListener = payerSelectListener
             }
         }
     }
