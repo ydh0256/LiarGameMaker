@@ -117,6 +117,24 @@ class GameRoomViewModel(
         }
     }
 
+    fun startGame(category: String, keyWord: String, liarCount: Int, isAutoKeyword: Boolean) {
+        loadStart()
+        val roomId = gameRoom.value?.roomId ?: return
+        val masterId = gameRoom.value?.masterId ?: return
+        val playerList = playerList.value ?: return
+
+        val game = makeGame(category, keyWord, liarCount, masterId, isAutoKeyword, playerList)
+
+        gameRoomDataSource.addGameData(roomId, makeGame(category, keyWord, liarCount, masterId, isAutoKeyword, playerList)).addOnSuccessListener {
+            loadEnd()
+        }.addOnFailureListener { exception ->
+            loadEnd()
+            ErrorEvent(ErrorEventType.NORMAL, ErrorEventViewType.TOAST, exception.localizedMessage).also { errorEvent ->
+                sendErrorEvent(errorEvent)
+            }
+        }
+    }
+
     private fun sendMessage(roomId: String, gameMessage: GameMessage) {
         gameRoomDataSource.sendMessage(roomId, gameMessage).addOnFailureListener { exception ->
             ErrorEvent(ErrorEventType.NORMAL, ErrorEventViewType.TOAST, exception.localizedMessage).also { errorEvent ->
@@ -149,7 +167,7 @@ class GameRoomViewModel(
                     return@addSnapshotListener
                 }
                 snapshot?.let {
-                    it.toObjects(Game::class.java)?.let { gameList ->
+                    it.toObjects(Game::class.java).let { gameList ->
                         _currentGame.value = gameList.firstOrNull()
                     }
                 }

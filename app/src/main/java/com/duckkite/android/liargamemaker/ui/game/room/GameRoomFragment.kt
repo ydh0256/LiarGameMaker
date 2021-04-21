@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.view.postDelayed
 import androidx.lifecycle.Observer
@@ -25,6 +26,7 @@ import com.duckkite.android.liargamemaker.ui.base.BaseFragment
 import com.duckkite.android.liargamemaker.ui.game.room.adapter.MessageListAdapter
 import com.duckkite.android.liargamemaker.ui.game.room.adapter.PlayerListAdapter
 import com.duckkite.android.liargamemaker.ui.game.room.dialog.PlayerListDialog
+import com.google.android.material.textfield.TextInputEditText
 import kotlinx.android.synthetic.main.fragment_game_room.*
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -134,11 +136,25 @@ class GameRoomFragment : BaseFragment(), GameRoomAction {
 
         val dialog = MaterialDialog(activity, BottomSheet(LayoutMode.WRAP_CONTENT)).show {
             title(R.string.master_menu_make_game)
-//            customView(R.layout.custom_view, scrollable = true, horizontalPadding = true)
+            noAutoDismiss()
+            customView(R.layout.view_game_start, scrollable = true, horizontalPadding = true)
+            val categoryEditText: TextInputEditText = getCustomView().findViewById(R.id.categoryName)
+            val keywordEditText: TextInputEditText = getCustomView().findViewById(R.id.keywordName)
             positiveButton(R.string.master_menu_make_button) { dialog ->
-
+                if (categoryEditText.length() == 0 || keywordEditText.length() == 0) {
+                    Toast.makeText(activity, getString(R.string.master_menu_make_error_keyword), Toast.LENGTH_SHORT).show()
+                } else {
+                    gameRoomViewModel.startGame(
+                        categoryEditText.text.toString(),
+                        keywordEditText.text.toString(),
+                        1,
+                        false
+                    )
+                }
             }
-            negativeButton(android.R.string.cancel)
+            negativeButton(android.R.string.cancel) { dialog ->
+                dialog.dismiss()
+            }
         }
         dialog.show {  }
     }
