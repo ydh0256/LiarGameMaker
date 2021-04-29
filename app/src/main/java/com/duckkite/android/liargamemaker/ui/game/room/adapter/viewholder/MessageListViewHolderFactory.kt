@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import com.duckkite.android.liargamemaker.data.model.GameMessage
 import com.duckkite.android.liargamemaker.data.model.MessageType
 import com.duckkite.android.liargamemaker.databinding.ItemMessageChatBinding
+import com.duckkite.android.liargamemaker.databinding.ItemMessageGameBinding
 import com.duckkite.android.liargamemaker.databinding.ItemMessageNotificationBinding
 import com.duckkite.android.liargamemaker.util.adapter.BindableViewHolder
 import com.duckkite.android.liargamemaker.util.adapter.BindableViewHolderFactory
@@ -15,6 +16,7 @@ object MessageListViewHolderFactory: BindableViewHolderFactory<GameMessage> {
         return when(MessageType.values()[viewType]) {
             MessageType.CHAT -> ChatMessageViewHolder(ItemMessageChatBinding.inflate(inflater, parent, false))
             MessageType.NOTIFICATION  -> NotificationMessageViewHolder(ItemMessageNotificationBinding.inflate(inflater, parent, false))
+            MessageType.GAME -> KeywordMessageViewHolder(ItemMessageGameBinding.inflate(inflater, parent, false))
         }
     }
 }

@@ -102,19 +102,10 @@ class GameRoomFragment : BaseFragment(), GameRoomAction {
     }
 
     override fun onMasterMenuClick() {
-        val currentGame = gameRoomViewModel.currentGame.value
         if (gameRoomViewModel.playerList.value?.size ?: 0 < 2) {
             return
         }
-        when {
-            currentGame == null -> selectStartGameMenu()
-            currentGame.currentRound < currentGame.maxRound -> {
-
-            }
-            currentGame.currentRound == currentGame.maxRound -> {
-
-            }
-        }
+        selectStartGameMenu()
     }
 
     private fun selectStartGameMenu() {
@@ -140,7 +131,7 @@ class GameRoomFragment : BaseFragment(), GameRoomAction {
             customView(R.layout.view_game_start, scrollable = true, horizontalPadding = true)
             val categoryEditText: TextInputEditText = getCustomView().findViewById(R.id.categoryName)
             val keywordEditText: TextInputEditText = getCustomView().findViewById(R.id.keywordName)
-            positiveButton(R.string.master_menu_make_button) { dialog ->
+            positiveButton(R.string.master_menu_make_button) {
                 if (categoryEditText.length() == 0 || keywordEditText.length() == 0) {
                     Toast.makeText(activity, getString(R.string.master_menu_make_error_keyword), Toast.LENGTH_SHORT).show()
                 } else {

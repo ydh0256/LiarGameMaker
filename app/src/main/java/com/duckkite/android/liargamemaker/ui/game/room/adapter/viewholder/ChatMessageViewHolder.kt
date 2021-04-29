@@ -10,7 +10,7 @@ class ChatMessageViewHolder(private val itemMessageChatBinding: ItemMessageChatB
     override fun bindModel(model: GameMessage) {
         with(itemMessageChatBinding) {
             gameMessage = model
-            isMyMessage = MyProfile.isMe(model.sender?.uuid)
+            isMyMessage = MyProfile.isMe(model.sender.uuid)
         }
     }
 }

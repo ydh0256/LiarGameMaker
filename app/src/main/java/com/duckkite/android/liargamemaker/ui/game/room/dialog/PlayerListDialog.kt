@@ -26,7 +26,7 @@ class PlayerListDialog(private val windowContext: Context) {
     fun show() {
         with(bindingView.playerList) {
             adapter = PlayerListAdapter().apply {
-                payerSelectListener = this@PlayerListDialog.payerSelectListener
+                playerSelectListener = this@PlayerListDialog.payerSelectListener
                 playerListDialog?.dismiss()
             }
         }

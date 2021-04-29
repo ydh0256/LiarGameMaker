@@ -8,6 +8,7 @@ data class GameMessage(
     val messageType: MessageType = MessageType.NOTIFICATION,
     var sender: User = User(),
     val messageContent: MessageContent = MessageContent(),
+    val gameContent: Game = Game(),
     val messageTime: Long = System.currentTimeMillis()
 
 ) : TypeableEntity {
@@ -16,7 +17,8 @@ data class GameMessage(
 
 enum class MessageType {
     NOTIFICATION,
-    CHAT
+    CHAT,
+    GAME
 }
 
 data class MessageContent(
@@ -28,8 +30,7 @@ data class MessageContent(
 enum class MessageContentType {
     NORMAL,
     ENTERED,
-    LEAVE,
-    NEW_GAME
+    LEAVE
 }
 
 fun makeChatMessage(profile: User, sendMessageText: String?): GameMessage {
@@ -45,5 +46,13 @@ fun makeEnterMessage(profile: User): GameMessage {
         messageType = MessageType.NOTIFICATION,
         sender = profile,
         messageContent = MessageContent(MessageContentType.ENTERED)
+    )
+}
+
+fun makeGameMessage(profile: User, game: Game): GameMessage {
+    return GameMessage(
+        messageType = MessageType.GAME,
+        sender = profile,
+        gameContent = game
     )
 }

@@ -15,7 +15,7 @@ abstract class BaseActivity: AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        getViewModel()?.isLoading?.observe(this, Observer {isLoading ->
+        getViewModel()?.isLoading?.observe(this, { isLoading ->
             when(isLoading) {
                 true -> disableUserInteraction()
                 false -> enableUserInteraction()

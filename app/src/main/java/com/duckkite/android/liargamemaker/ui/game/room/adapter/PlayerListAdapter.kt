@@ -12,7 +12,7 @@ class PlayerListAdapter(): BindableAdapter<PlayerListAdapter.VH, User>() {
         fun onPlayerSelect(player: User)
     }
 
-    var payerSelectListener: PlayerSelectListener? = null
+    var playerSelectListener: PlayerSelectListener? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
         val inflater = LayoutInflater.from(parent.context)
@@ -23,7 +23,7 @@ class PlayerListAdapter(): BindableAdapter<PlayerListAdapter.VH, User>() {
         override fun bindModel(model: User) {
             with(itemUserBinding) {
                 user = model
-                this.playerSelectListener = payerSelectListener
+                this.playerSelectListener = playerSelectListener
             }
         }
     }

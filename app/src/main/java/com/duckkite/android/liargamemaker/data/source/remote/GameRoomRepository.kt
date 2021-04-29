@@ -43,20 +43,9 @@ class GameRoomRepository(
             .collection(PLAYER_LIST).document(user.uuid).set(user)
     }
 
-    override fun addGameData(roomId: String, game: Game): Task<Void> {
-        return gameRemoteDataSource.collection(GAME_LIST_TABLE).document(roomId)
-            .collection(GAME_LIST).document(game.gameId).set(game)
-    }
-
-    override fun fetchCurrentGame(roomId: String): Query {
-        return gameRemoteDataSource.collection(GAME_LIST_TABLE).document(roomId)
-            .collection(GAME_LIST).orderBy("startTime", Query.Direction.DESCENDING).limit(1)
-    }
-
     companion object {
         private const val GAME_LIST_TABLE = "GameList"
         private const val MESSAGE_LIST = "GameMessages"
         private const val PLAYER_LIST = "Players"
-        private const val GAME_LIST = "Games"
     }
 }

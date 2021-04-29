@@ -29,9 +29,6 @@ class GameRoomViewModel(
     private val _messageList = MutableLiveData<List<GameMessage>>().apply { value = emptyList() }
     val messageList: LiveData<List<GameMessage>>
         get() = _messageList
-    private val _currentGame = MutableLiveData<Game?>()
-    val currentGame: LiveData<Game?>
-        get() = _currentGame
     val sendMessageText = MutableLiveData<String>()
 
     val playerMap: LiveData<Map<String, User>> = Transformations.map(playerList) { playerList ->
@@ -58,7 +55,6 @@ class GameRoomViewModel(
                     it.toObject(GameRoom::class.java)?.let { gameRoom ->
                         this._gameRoom.value = gameRoom
                         this.fetchPlayerList(game.roomId)
-                        this.fetchCurrentGame(game.roomId)
                         if (gameRoom.gameMode == GameMode.OFFLINE) {
                             viewModelScope.launch {
                                 gameListDataSource.setOfflineGame(gameRoom)
@@ -118,21 +114,15 @@ class GameRoomViewModel(
     }
 
     fun startGame(category: String, keyWord: String, liarCount: Int, isAutoKeyword: Boolean) {
-        loadStart()
+        val profile = MyProfile.profile ?: return
         val roomId = gameRoom.value?.roomId ?: return
         val masterId = gameRoom.value?.masterId ?: return
         val playerList = playerList.value ?: return
 
         val game = makeGame(category, keyWord, liarCount, masterId, isAutoKeyword, playerList)
+        val gameMessage = makeGameMessage(profile, game)
 
-        gameRoomDataSource.addGameData(roomId, makeGame(category, keyWord, liarCount, masterId, isAutoKeyword, playerList)).addOnSuccessListener {
-            loadEnd()
-        }.addOnFailureListener { exception ->
-            loadEnd()
-            ErrorEvent(ErrorEventType.NORMAL, ErrorEventViewType.TOAST, exception.localizedMessage).also { errorEvent ->
-                sendErrorEvent(errorEvent)
-            }
-        }
+        sendMessage(roomId, gameMessage)
     }
 
     private fun sendMessage(roomId: String, gameMessage: GameMessage) {
@@ -154,21 +144,6 @@ class GameRoomViewModel(
                     _playerList.value = it.toObjects(User::class.java)
                     when (isCheckedMyProfileStatus) {
                         false -> addOrUpdateMyProfile(roomId)
-                    }
-                }
-            }
-    }
-
-    private fun fetchCurrentGame(roomId: String) {
-        gameRoomDataSource.fetchCurrentGame(roomId)
-            .addSnapshotListener { snapshot, error ->
-                error?.let {
-                    handleSimpleFirebaseException(it, ErrorEventType.CLOSE)
-                    return@addSnapshotListener
-                }
-                snapshot?.let {
-                    it.toObjects(Game::class.java).let { gameList ->
-                        _currentGame.value = gameList.firstOrNull()
                     }
                 }
             }

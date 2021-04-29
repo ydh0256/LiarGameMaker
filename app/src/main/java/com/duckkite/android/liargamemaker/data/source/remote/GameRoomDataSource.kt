@@ -15,6 +15,4 @@ interface GameRoomDataSource {
     fun sendMessage(roomId: String, message: GameMessage): Task<Void>
     fun addPlayerToChatRoom(roomId: String, user: User): Task<Void>
     fun updatePlayerToChatRoom(roomId: String, user: User): Task<Void>
-    fun addGameData(roomId: String, game: Game): Task<Void>
-    fun fetchCurrentGame(roomId: String): Query
 }
